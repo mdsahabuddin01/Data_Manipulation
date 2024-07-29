@@ -12,6 +12,7 @@ Assessing the running average of home goals scored.
 Ordering both the running average and running total by date.
 */
 
+-- Slide to left
 SELECT 
 	date,
 	home_goal,
@@ -26,3 +27,18 @@ WHERE
 	hometeam_id = 9908 
     AND season = '2011/2012';
 
+-- Slide to right
+SELECT 
+	-- Select the date, home goal, and away goals
+	date,
+    home_goal,
+    away_goal,
+    -- Create a running total and running average of home goals
+    sum(home_goal) over(ORDER BY date DESC
+         ROWS BETWEEN current row AND unbounded following) AS running_total,
+    avg(home_goal) over(ORDER BY date DESC
+         ROWS BETWEEN current row AND unbounded following) AS running_avg
+FROM match
+WHERE 
+	awayteam_id = 9908 
+    AND season = '2011/2012';
